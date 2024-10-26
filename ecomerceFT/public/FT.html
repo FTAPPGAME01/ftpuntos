@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Store 360°</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .gradient-text {
+            background: linear-gradient(45deg, #FF8008, #FFC837);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: bold;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #FF8008, #FFC837);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: linear-gradient(45deg, #FF8008, #FFC837);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(15,12,41,0.9), rgba(48,43,99,0.9)), 
+                        url('/api/placeholder/1920/1080') center/cover;
+            margin-bottom: 4rem;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            
+            font-size: clamp(3rem, 8vw, 6rem);
+            margin-bottom: 2rem;
+            line-height: 1.1;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, #FF8008, #FFC837);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: titleGlow 2s infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from {
+                text-shadow: 0 0 20px rgba(255,128,8,0.5);
+            }
+            to {
+                text-shadow: 0 0 30px rgba(255,200,55,0.8);
+            }
+        }
+
+        .hero-subtitle {
+            margin-top: -60px;
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            margin-bottom: 3rem;
+            color: rgba(255,255,255,0.9);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: white;
+            background: linear-gradient(45deg, #FF8008, #FFC837);
+            border-radius: 50px;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255,128,8,0.3);
+        }
+
+        .hero-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%) rotate(45deg);
+            transition: transform 0.5s ease;
+        }
+
+        .hero-cta:hover::before {
+            transform: translateX(100%) rotate(45deg);
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .shape {
+            position: absolute;
+            background: linear-gradient(45deg, rgba(255,128,8,0.1), rgba(255,200,55,0.1));
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        .shape:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 15%;
+            animation-delay: -5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            50% {
+                transform: translate(30px, 30px) rotate(180deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: rgba(255,255,255,0.8);
+            animation: bounce 2s infinite;
+            z-index: 2;
+        }
+
+        .scroll-indicator span {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .scroll-arrow {
+            width: 30px;
+            height: 30px;
+            border: 2px solid;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 6rem 1rem 2rem;
+            }
+
+            .hero-title {
+                font-size: clamp(2.5rem, 6vw, 4rem);
+            }
+
+            .hero-subtitle {
+                font-size: clamp(1rem, 2.5vw, 1.5rem);
+            }
+
+            .shape {
+                transform: scale(0.7);
+            }
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            padding: 4rem 2rem;
+            perspective: 1000px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+        }
+
+        .product-image-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 2rem;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .product-image:hover {
+            transform: scale(1.05);
+        }
+
+        .product-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #FFC837;
+        }
+
+        .product-price {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #FF8008, #FFC837);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .add-to-cart {
+            background: linear-gradient(45deg, #FF8008, #FFC837);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-to-cart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%) rotate(45deg);
+            transition: transform 0.5s ease;
+        }
+
+        .add-to-cart:hover::before {
+            transform: translateX(100%) rotate(45deg);
+        }
+
+        .add-to-cart:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .cart-content {
+            position: fixed;
+            right: -500px;
+            top: 0;
+            width: 500px;
+            height: 100%;
+            background: linear-gradient(135deg, #302b63, #24243e);
+            padding: 2rem;
+            overflow-y: auto;
+            transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cart-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            transform: translateX(50px);
+            opacity: 0;
+            animation: slideIn 0.5s forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .cart-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-right: 1rem;
+        }
+
+        .checkout-button {
+            background: linear-gradient(45deg, #FF8008, #FFC837);
+            color: white;
+            border: none;
+            padding: 1.5rem;
+            width: 100%;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .checkout-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .product-360-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(15, 12, 41, 0.95);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            z-index: 1100;
+        }
+
+        .close-360 {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .close-360:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        #360View {
+            position: relative;
+        }
+
+        #360View::before {
+            content: '↺ Arrastra para rotar';
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .product-features {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-30px);
+            }
+            60% {
+                transform: translateY(-15px);
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">Puntos FT</div>
+        <div class="cart-icon" onclick="toggleCart()">
+            🛒
+            <span class="cart-count">0</span>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">Experiencia de Compra Elite</h1>
+            <p class="hero-subtitle">Descubre una nueva dimensión en compras online con nuestra experiencia inmersiva en 360°</p>
+            <a href="#products" class="hero-cta">Explorar Colección</a>
+        </div>
+        <!-- <div class="scroll-indicator">
+            <span>Descubre Más</span>
+            <div class="scroll-arrow">⌄</div>
+        </div> -->
+    </section>
+
+    <div class="products">
+        <div class="product-card">
+            <div class="product-image-container" onclick="show360View(1)">
+                <img src="/public/assents/WhatsApp Image 2024-10-26 at 10.09.49 AM (2).jpeg" alt="Producto 1" class="product-image">
+            </div>
+            <div class="product-features">
+                <span class="feature">Premium</span>
+                <span class="feature">Nuevo</span>
+                <span class="feature">Vista 360°</span>
+            </div>
+            <h3 class="product-title">Zapatos Deportivos Elite</h3>
+            <p class="product-price">$299.99</p>
+            <button class="add-to-cart" onclick="addToCart(1)">Añadir al carrito</button>
+        </div>
+
+        <div class="product-card">
+            <div class="product-image-container" onclick="show360View(2)">
+                <img src="/public/assents/WhatsApp Image 2024-10-26 at 10.09.49 AM (1).jpeg" alt="Producto 2" class="product-image">
+            </div>
+            <div class="product-features">
+                <span class="feature">Exclusivo</span>
+                <span class="feature">Limitado</span>
+                <span class="feature">Vista 360°</span>
+            </div>
+            <h3 class="product-title">SmartWatch Pro</h3>
+            <p class="product-price">$499.99</p>
+            <button class="add-to-cart" onclick="addToCart(2)">Añadir al carrito</button>
+        </div>
+    </div>
+
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 2rem;">Tu Carrito</h2>
+            <div id="cartItems"></div>
+            <div id="cartTotal"></div>
+            <button class="checkout-button" onclick="checkout()">Pagar con Nequi</button>
+        </div>
+    </div>
+
+    <div class="product-360-container" id="view360Modal">
+        <button class="close-360" onclick="close360View()">✖</button>
+        <div id="360View"></div>
+    </div>
+    <div class="products">
+        <div class="product-card">
+            <div class="product-image-container" onclick="show360View(1)">
+                <img src="/public/assents/WhatsApp Image 2024-10-26 at 10.09.49 AM (3).jpeg" alt="Producto 1" class="product-image">
+            </div>
+            <div class="product-features">
+                <span class="feature">Premium</span>
+                <span class="feature">Nuevo</span>
+                <span class="feature">Vista 360°</span>
+            </div>
+            <h3 class="product-title">Zapatos Deportivos Elite</h3>
+            <p class="product-price">$299.99</p>
+            <button class="add-to-cart" onclick="addToCart(1)">Añadir al carrito</button>
+        </div>
+
+        <div class="product-card">
+            <div class="product-image-container" onclick="show360View(2)">
+                <img src="/public/assents/WhatsApp Image 2024-10-26 at 10.09.49 AM (4).jpeg" alt="Producto 2" class="product-image">
+            </div>
+            <div class="product-features">
+                <span class="feature">Exclusivo</span>
+                <span class="feature">Limitado</span>
+                <span class="feature">Vista 360°</span>
+            </div>
+            <h3 class="product-title">SmartWatch Pro</h3>
+            <p class="product-price">$499.99</p>
+            <button class="add-to-cart" onclick="addToCart(2)">Añadir al carrito</button>
+        </div>
+    </div>
+
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 2rem;">Tu Carrito</h2>
+            <div id="cartItems"></div>
+            <div id="cartTotal"></div>
+            <button class="checkout-button" onclick="checkout()">Pagar con Nequi</button>
+        </div>
+    </div>
+
+    <div class="product-360-container" id="view360Modal">
+        <button class="close-360" onclick="close360View()">✖</button>
+        <div id="360View"></div>
+    </div>
+    <script>
+        // Modifica el script del botón
+document.querySelector('.hero-cta').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    // Encuentra todos los elementos con clase "products"
+    const productsSection = document.querySelector('.products');
+    
+    if (productsSection) {
+        // Calcula la posición considerando la barra de navegación fija
+        const navHeight = document.querySelector('nav').offsetHeight;
+        const targetPosition = productsSection.getBoundingClientRect().top + window.pageYOffset - navHeight;
+        
+        // Realiza el scroll suave
+        window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+        });
+    }
+});
+        // Animaciones iniciales con GSAP
+        gsap.from(".hero-title", {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            delay: 0.5
+        });
+
+        gsap.from(".hero-subtitle", {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            delay: 0.8
+        });
+
+        gsap.from(".product-card", {
+            duration: 1,
+            y: 100,
+            opacity: 0,
+            stagger: 0.2,
+            scrollTrigger: {
+                trigger: ".products",
+                start: "top center"
+            }
+        });
+  // Animaciones del hero mejoradas
+  gsap.from(".hero-content", {
+            duration: 1.5,
+            y: 100,
+            opacity: 0,
+            ease: "power4.out"
+        });
+
+        gsap.from(".shape", {
+            duration: 1.5,
+            scale: 0,
+            opacity: 0,
+            delay: 1,
+            stagger: 0.2,
+            ease: "elastic.out(1, 0.8)"
+        });
+
+        // Efecto parallax en el hero
+        document.addEventListener('mousemove', (e) => {
+            const shapes = document.querySelectorAll('.shape');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+
+            shapes.forEach((shape, index) => {
+                const speed = (index + 1) * 0.1;
+                const moveX = (x - 0.5) * speed * 100;
+                const moveY = (y - 0.5) * speed * 100;
+                shape.style.transform = `translate(${moveX}px, ${moveY}px) rotate(${moveX * 0.2}deg)`;
+            });
+        });
+
+        // Scroll suave al hacer clic en el CTA
+        document.querySelector('.hero-cta').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('#productos').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+
+    let cart = [];
+    let currentAngle = 0;
+    
+    // Efecto parallax en las tarjetas
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+        });
+    });
+
+    // Definir las imágenes para cada producto
+const product360Images = {
+    1: Array.from({length: 36}, (_, i) => `/public/assents/WhatsApp Image 2024-10-26 at 10.09.49 AM (2).jpeg`),
+    2: Array.from({length: 36}, (_, i) => `/public/assents/WhatsApp Image 2024-10-26 at 10.09.49 AM (1).jpeg`),
+    3: Array.from({length: 36}, (_, i) => `/api/placeholder/500/500?product=3&angle=${i}`),
+    4: Array.from({length: 36}, (_, i) => `/api/placeholder/500/500?product=4&angle=${i}`)
+};
+
+// Mantener registro del estado de rotación para cada producto
+const productRotationState = {
+    1: { currentAngle: 0, currentImageIndex: 0 },
+    2: { currentAngle: 0, currentImageIndex: 0 },
+    3: { currentAngle: 0, currentImageIndex: 0 },
+    4: { currentAngle: 0, currentImageIndex: 0 }
+};
+
+function show360View(productId) {
+    const modal = document.getElementById('view360Modal');
+    const viewContainer = document.getElementById('360View');
+    
+    // Crear un identificador único para el contenedor 3D de este producto
+    const containerId = `product-${productId}-container`;
+    
+    // Crear contenedor 3D específico para este producto
+    viewContainer.innerHTML = `
+        <div id="${containerId}" class="product-360-view" style="position: relative; width: 500px; height: 500px;">
+            <img src="${product360Images[productId][0]}" 
+                 alt="360 View of Product ${productId}" 
+                 style="width: 100%; height: 100%; border-radius: 10px;">
+            <div class="rotation-overlay"></div>
+        </div>
+    `;
+
+    // Animación de entrada
+    gsap.fromTo(modal, 
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1, duration: 0.5, display: 'block' }
+    );
+
+    let isDragging = false;
+    let startX;
+    
+    // Usar el estado específico del producto
+    const rotationState = productRotationState[productId];
+    const container = document.getElementById(containerId);
+    
+    container.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        container.style.cursor = 'grabbing';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        const diff = e.clientX - startX;
+        if (Math.abs(diff) > 10) {
+            // Actualizar el estado de rotación específico del producto
+            rotationState.currentImageIndex = 
+                (rotationState.currentImageIndex + (diff > 0 ? 1 : -1) + 36) % 36;
+            
+            // Actualizar la imagen
+            container.querySelector('img').src = 
+                product360Images[productId][rotationState.currentImageIndex];
+            
+            startX = e.clientX;
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+        if (container) {
+            container.style.cursor = 'grab';
+        }
+    });
+
+    // Agregar controles táctiles para dispositivos móviles
+    container.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        startX = e.touches[0].clientX;
+    });
+
+    container.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        
+        const diff = e.touches[0].clientX - startX;
+        if (Math.abs(diff) > 10) {
+            rotationState.currentImageIndex = 
+                (rotationState.currentImageIndex + (diff > 0 ? 1 : -1) + 36) % 36;
+            
+            container.querySelector('img').src = 
+                product360Images[productId][rotationState.currentImageIndex];
+            
+            startX = e.touches[0].clientX;
+        }
+    });
+
+    container.addEventListener('touchend', () => {
+        isDragging = false;
+    });
+}
+
+function close360View() {
+    const modal = document.getElementById('view360Modal');
+    gsap.to(modal, {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.3,
+        onComplete: () => {
+            modal.style.display = 'none';
+            // Limpiar el contenedor al cerrar
+            document.getElementById('360View').innerHTML = '';
+        }
+    });
+}
+
+    function addToCart(productId) {
+        const products = {
+            1: { 
+                name: 'Zapatos Deportivos Elite', 
+                price: 299.99,
+                image: '/api/placeholder/100/100'
+            },
+            2: { 
+                name: 'SmartWatch Pro', 
+                price: 499.99,
+                image: '/api/placeholder/100/100'
+            }
+        };
+
+        // Animación del botón
+        const button = event.target;
+        gsap.to(button, {
+            scale: 0.95,
+            duration: 0.1,
+            yoyo: true,
+            repeat: 1
+        });
+
+        cart.push(products[productId]);
+        updateCartUI();
+
+        // Notificación flotante
+        showNotification(`${products[productId].name} agregado al carrito`);
+    }
+
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #FF8008, #FFC837);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        gsap.to(notification, {
+            opacity: 1,
+            y: 0,
+            duration: 0.3,
+            onComplete: () => {
+                setTimeout(() => {
+                    gsap.to(notification, {
+                        opacity: 0,
+                        y: 20,
+                        duration: 0.3,
+                        onComplete: () => notification.remove()
+                    });
+                }, 2000);
+            }
+        });
+    }
+
+    function updateCartUI() {
+        const cartCount = document.querySelector('.cart-count');
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        
+        // Actualizar contador con animación
+        gsap.to(cartCount, {
+            scale: 1.2,
+            duration: 0.1,
+            yoyo: true,
+            repeat: 1
+        });
+        
+        cartCount.textContent = cart.length;
+        
+        cartItems.innerHTML = cart.map((item, index) => `
+            <div class="cart-item" style="animation-delay: ${index * 0.1}s">
+                <img src="${item.image}" alt="${item.name}">
+                <div>
+                    <h3 class="gradient-text">${item.name}</h3>
+                    <p>$${item.price}</p>
+                </div>
+            </div>
+        `).join('');
+
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+        cartTotal.innerHTML = `
+            <h3 class="gradient-text" style="font-size: 1.5rem; margin-top: 2rem;">
+                Total: $${total.toFixed(2)}
+            </h3>
+        `;
+    }
+
+    function toggleCart() {
+        const modal = document.getElementById('cartModal');
+        const cartContent = modal.querySelector('.cart-content');
+        
+        if (modal.style.display !== 'block') {
+            modal.style.display = 'block';
+            gsap.to(cartContent, {
+                right: 0,
+                duration: 0.5,
+                ease: "power2.out"
+            });
+        } else {
+            gsap.to(cartContent, {
+                right: -500,
+                duration: 0.5,
+                ease: "power2.in",
+                onComplete: () => modal.style.display = 'none'
+            });
+        }
+    }
+
+    async function checkout() {
+    const checkoutButton = event.target;
+    checkoutButton.innerHTML = '<span class="loading">Procesando...</span>';
+    checkoutButton.disabled = true;
+
+    try {
+        // Datos para la API de Nequi
+        const paymentData = {
+            phoneNumber: "", // El número de teléfono se obtendría de un formulario
+            value: cart.reduce((sum, item) => sum + item.price, 0),
+            reference: "ORDER-" + Math.random().toString(36).substr(2, 9),
+            message: "Pago en LUXE Store"
+        };
+
+        // En producción, esta sería tu URL del backend
+        const apiUrl = "https://api.nequi.com/payments/v2/-services-paymentservice-generateqrcode";
+
+        // Configuración para la API de Nequi
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa('tu_api_key:tu_api_secret'),
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(paymentData)
+        };
+
+        // Simular respuesta de Nequi (en producción, esto sería un fetch real)
+        const nequiResponse = {
+            data: {
+                paymentUrl: `https://clientes.nequi.com.co/recargas?_ga=2.238334726.785325265.1719500298-1936746638.1719342173/${paymentData.reference}?_amount=${paymentData.value}`
+            }
+        };
+
+        // Redirigir a la URL de pago de Nequi
+        window.location.href = nequiResponse.data.paymentUrl;
+
+    } catch (error) {
+        console.error('Error en el proceso de pago:', error);
+        showNotification('Error al procesar el pago. Intenta nuevamente.', 'error');
+        checkoutButton.innerHTML = 'Intentar nuevamente';
+        checkoutButton.disabled = false;
+    }
+}
+    // Inicialización de efectos y animaciones
+    document.addEventListener('DOMContentLoaded', () => {
+        // Parallax suave en el hero
+        document.addEventListener('mousemove', (e) => {
+            const hero = document.querySelector('.hero-section');
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+            hero.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+
+        // Observador de intersección para animaciones al scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.transform = 'translateY(0)';
+                    entry.target.style.opacity = '1';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.product-card').forEach(card => {
+            observer.observe(card);
+        });
+    });
+</script>
+</body>
+</html>
